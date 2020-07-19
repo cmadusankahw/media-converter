@@ -50,6 +50,18 @@ public class WatchDirectory extends ConverterObservable {
             Path mediaFolder = Paths.get(filePath);
             System.out.println("File Path:" + filePath);
 
+            // create convert object using MediaConverter Factory
+            Converter toMP3Convert=factory.getInstance(folderName);
+
+            // check for already available files and convert them
+            String[] fileNames;
+            File f = new File(sourcePath);
+            fileNames = f.list();
+
+            for (String file : fileNames) {
+                toMP3Convert.Convert(filePath,outputPath);
+            }
+
             // instantiating watch service
             WatchService watchService = FileSystems.getDefault().newWatchService();
             mediaFolder.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
@@ -65,11 +77,7 @@ public class WatchDirectory extends ConverterObservable {
                         System.out.println("File Created:" + fileName);
 
                         // concat filename to file path
-                        filePath += '/' + fileName;
                         this.setPath(filePath);
-
-                        // create convert object using MediaConverter Factory
-                        Converter toMP3Convert=factory.getInstance(folderName);
 
                         // convert file and store in the output directory
                         toMP3Convert.Convert(filePath,outputPath);
